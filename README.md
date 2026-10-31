@@ -59,4 +59,4 @@ Prefer a script? From a clone of this repo, run `./install.sh /path/to/Vencord` 
 
 [GPL-3.0-or-later](LICENSE). Not affiliated with Vencord or Discord.
 
-Sign in flows are ported from [oh-my-pi](https://github.com/can1357/oh-my-pi), the provider list comes from [models.dev](https://models.dev), and free checks are by [LanguageTool](https://languagetool.org).
+Sign in flows are ported from [oh-my-pi](https://github.com/can1357/oh-my-pi) (MIT, see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)), the provider list comes from [models.dev](https://models.dev), and free checks are by [LanguageTool](https://languagetool.org).
