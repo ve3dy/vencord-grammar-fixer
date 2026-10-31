@@ -5,7 +5,6 @@
  */
 
 import { Paragraph } from "@components/Paragraph";
-import { useAwaiter, useForceUpdater } from "@utils/react";
 import type { RenderModalProps } from "@vencord/discord-types";
 import { Modal, openModal, TextArea, useState } from "@webpack/common";
 
@@ -14,38 +13,64 @@ import { getDraft, setDraft } from "./draft";
 import { cl } from "./styles";
 
 function ReplyModal({ channelId, message, ...props }: RenderModalProps & { channelId: string; message: string; }) {
-    const [draft] = useState(() => getDraft(channelId));
-    const [edited, setEdited] = useState<string | null>(null);
-    const [signal, regenerate] = useForceUpdater(true);
-    const [reply, error, pending] = useAwaiter(() => suggestReply(message, draft), {
-        fallbackValue: "",
-        deps: [signal],
-        onSuccess: () => setEdited(null)
-    });
+    // a started draft is usually what the user wants to say
+    const [notes, setNotes] = useState(() => getDraft(channelId));
+    const [reply, setReply] = useState("");
+    const [pending, setPending] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const text = edited ?? reply;
+    async function write() {
+        setPending(true);
+        setError(null);
+        try {
+            setReply(await suggestReply(message, notes));
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setPending(false);
+        }
+    }
+
+    const canWrite = !pending && !!notes.trim();
 
     return (
         <Modal
             {...props}
             title="Suggest Reply"
-            subtitle={pending ? "Writing a reply..." : error ? String(error.message ?? error) : draft.trim() ? "Based on your draft." : null}
+            subtitle={pending ? "Writing a reply..." : error}
             actions={[
                 { text: "Cancel", variant: "secondary", onClick: props.onClose },
-                { text: "Try Again", variant: "secondary", disabled: pending, onClick: regenerate },
-                {
-                    text: draft.trim() ? "Replace Draft" : "Use Reply",
+                reply
+                    ? { text: "Rewrite", variant: "secondary", disabled: !canWrite, onClick: write }
+                    : { text: "Write Reply", variant: "primary", disabled: !canWrite, onClick: write },
+                ...(reply ? [{
+                    text: "Use Reply",
                     variant: "primary",
-                    disabled: pending || !text.trim(),
+                    disabled: pending || !reply.trim(),
                     onClick() {
-                        setDraft(channelId, text);
+                        setDraft(channelId, reply);
                         props.onClose();
                     }
-                }
+                }] : [])
             ]}
         >
             <Paragraph className={cl("context")}>{message}</Paragraph>
-            <TextArea value={text} onChange={setEdited} rows={4} disabled={pending} />
+
+            <Paragraph size="sm" weight="medium" className={cl("label")}>What do you want to say?</Paragraph>
+            <TextArea
+                value={notes}
+                onChange={setNotes}
+                rows={2}
+                placeholder="Rough notes in any language, like: yes but I'll be 10 min late"
+                autoFocus
+            />
+
+            {reply && (
+                <>
+                    <Paragraph size="sm" weight="medium" className={cl("label")}>Reply</Paragraph>
+                    <TextArea value={reply} onChange={setReply} rows={4} disabled={pending} />
+                </>
+            )}
         </Modal>
     );
 }

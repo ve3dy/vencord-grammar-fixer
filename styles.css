@@ -31,3 +31,7 @@
     max-height: 120px;
     overflow-y: auto;
 }
+
+.vc-grammar-fixer-label {
+    margin: 12px 0 6px;
+}

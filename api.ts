@@ -39,6 +39,6 @@ export async function checkText(text: string) {
     return diff(text, fixed);
 }
 
-export function suggestReply(message: string, draft: string) {
-    return complete(replyPrompt(settings.store.style, !!draft.trim()), replyInput(message, draft.trim()));
+export function suggestReply(message: string, notes: string) {
+    return complete(replyPrompt(settings.store.style), replyInput(message, notes.trim()));
 }

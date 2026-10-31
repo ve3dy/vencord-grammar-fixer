@@ -21,12 +21,13 @@ export function fixPrompt(style: Style) {
         + `Reply with only the fixed message. ${styles[style].prompt}`;
 }
 
-export function replyPrompt(style: Style, hasDraft: boolean) {
-    return "Write a short, natural reply to the Discord message the user received, as the user. "
-        + (hasDraft ? "The user already started a reply: keep its intent and stance, only make it clear and natural. " : "")
+export function replyPrompt(style: Style) {
+    return "The user received a Discord message and wrote rough notes on what they want to answer. Rewrite the notes into a polished reply they can send: "
+        + "fix spelling and grammar, write out shorthand, and make it read naturally as an answer to the message. "
+        + "Keep their intent, stance and facts, and don't add anything they didn't say. Write in the language of their notes. "
         + `${KEEP_MARKUP} Reply with only the reply text. ${styles[style].prompt}`;
 }
 
-export function replyInput(message: string, draft: string) {
-    return draft ? `Message:\n${message}\n\nMy draft reply:\n${draft}` : message;
+export function replyInput(message: string, notes: string) {
+    return `Message I received:\n${message}\n\nWhat I want to say:\n${notes}`;
 }
