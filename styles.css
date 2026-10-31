@@ -1,0 +1,33 @@
+.vc-grammar-fixer-issue {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vc-grammar-fixer-issue:last-child {
+    border-bottom: none;
+}
+
+.vc-grammar-fixer-message {
+    color: var(--text-muted);
+}
+
+.vc-grammar-fixer-error {
+    color: var(--status-danger);
+    text-decoration: line-through;
+}
+
+.vc-grammar-fixer-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.vc-grammar-fixer-context {
+    white-space: pre-wrap;
+    color: var(--text-muted);
+    max-height: 120px;
+    overflow-y: auto;
+}
