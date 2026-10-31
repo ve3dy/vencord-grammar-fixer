@@ -18,8 +18,12 @@ export type Credential =
     | { type: "oauth"; creds: OAuthCredentials; };
 
 function store(): Record<string, string> {
-    const plugin = NativeSettings.store.plugins.GrammarFixer ??= {};
-    return plugin.credentials ??= {};
+    // read back through the store after creating the objects: `??=` returns the plain object,
+    // and writes to it bypass the proxy, so they would never be saved to disk
+    const { plugins } = NativeSettings.store;
+    plugins.GrammarFixer ??= {};
+    plugins.GrammarFixer.credentials ??= {};
+    return plugins.GrammarFixer.credentials;
 }
 
 export function getCredential(providerId: string): Credential | undefined {
