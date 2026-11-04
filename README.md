@@ -18,7 +18,7 @@ Fix the grammar of your Discord messages and get reply suggestions.
 - **Fix Grammar**: click the button in the chat bar to check your message. Every fix is listed on its own, so you can keep or ignore each one.
 - **Suggest Reply**: right-click a message, jot down what you want to say in any language, and get it back as a polished reply.
 - **Writing styles**: Minimal changes, Casual, Concise or Formal.
-- Mentions, emojis, links and code never go to the AI and come back unchanged.
+- Mentions, emojis, links and code in what you write are kept out of AI requests and come back unchanged.
 
 <table>
   <tr>
