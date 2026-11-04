@@ -11,7 +11,7 @@ import definePlugin, { type IconComponent, OptionType } from "@utils/types";
 import type { Message } from "@vencord/discord-types";
 import { ChannelStore, Menu } from "@webpack/common";
 
-import { Native } from "./api";
+import { checkText, Native } from "./api";
 import { getDraft } from "./draft";
 import { openFixModal } from "./FixModal";
 import { styles } from "./prompts";
@@ -71,6 +71,13 @@ const FixButton: ChatBarButtonFactory = ({ isAnyChat, isEmpty, channel }) => {
             onClick={() => {
                 const draft = getDraft(channel.id);
                 if (draft.trim()) openFixModal(channel.id, draft);
+            }}
+            buttonProps={{
+                // start checking before the click, the modal picks up the same request
+                onPointerEnter() {
+                    const draft = getDraft(channel.id);
+                    if (draft.trim()) void checkText(draft);
+                }
             }}
         >
             <GrammarFixerIcon />

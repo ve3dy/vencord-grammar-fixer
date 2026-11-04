@@ -18,10 +18,27 @@ import type { GrammarMatch } from "./types";
 
 const CONTEXT_LENGTH = 40;
 
+/** About CONTEXT_LENGTH characters around the issue, without cutting words in half */
+function contextBounds(text: string, offset: number, length: number) {
+    let start = Math.max(0, offset - CONTEXT_LENGTH);
+    if (start > 0 && /\S/.test(text[start - 1])) {
+        const space = text.slice(start, offset).search(/\s/);
+        start = space === -1 ? offset : start + space + 1;
+    }
+
+    const issueEnd = offset + length;
+    let end = Math.min(text.length, issueEnd + CONTEXT_LENGTH);
+    if (end < text.length && /\S/.test(text[end])) {
+        const space = text.slice(issueEnd, end).search(/\s\S*$/);
+        end = space === -1 ? issueEnd : issueEnd + space;
+    }
+
+    return [start, end];
+}
+
 function Issue({ text, match, choice, onChoose }: { text: string; match: GrammarMatch; choice: string | null; onChoose(value: string | null): void; }) {
     const { message, offset, length } = match;
-    const start = Math.max(0, offset - CONTEXT_LENGTH);
-    const end = offset + length + CONTEXT_LENGTH;
+    const [start, end] = contextBounds(text, offset, length);
 
     return (
         <div className={cl("issue")}>

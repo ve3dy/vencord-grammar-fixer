@@ -13,6 +13,9 @@ export interface Fix {
 }
 
 const TOKEN = /[\p{L}\p{N}'’]+|\s+|[^\p{L}\p{N}\s]/gu;
+const WORD_BEFORE = /[\p{L}\p{N}'’]+$/u;
+const WORD_AFTER = /^[\p{L}\p{N}'’]+/u;
+const STARTS_WITH_WORD = /^[\p{L}\p{N}]/u;
 
 /** Turns the AI's fixed message into LanguageTool-style matches, so each change can be reviewed on its own */
 export function diff(original: string, fixed: string) {
@@ -53,6 +56,27 @@ export function diff(original: string, fixed: string) {
             matches.push({ message: "", offset: start, length: offset - start, replacements: [{ value }] });
         }
     }
+
+    // a lone "." or "," is hard to read, so show punctuation changes, additions and removals together with the word they touch
+    matches.forEach((match, k) => {
+        const fix = match.replacements[0];
+        if (STARTS_WITH_WORD.test(original.slice(match.offset, match.offset + match.length)) && STARTS_WITH_WORD.test(fix.value)) return;
+
+        const previousEnd = k ? matches[k - 1].offset + matches[k - 1].length : 0;
+        const before = WORD_BEFORE.exec(original.slice(previousEnd, match.offset))?.[0];
+        if (before) {
+            match.offset -= before.length;
+            match.length += before.length;
+            fix.value = before + fix.value;
+            return;
+        }
+
+        const after = WORD_AFTER.exec(original.slice(match.offset + match.length, matches[k + 1]?.offset))?.[0];
+        if (after) {
+            match.length += after.length;
+            fix.value += after;
+        }
+    });
 
     return matches;
 }

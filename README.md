@@ -18,7 +18,7 @@ Fix the grammar of your Discord messages and get reply suggestions.
 - **Fix Grammar**: click the button in the chat bar to check your message. Every fix is listed on its own, so you can keep or ignore each one.
 - **Suggest Reply**: right-click a message, jot down what you want to say in any language, and get it back as a polished reply.
 - **Writing styles**: Minimal changes, Casual, Concise or Formal.
-- Mentions, emojis, links and code are left alone.
+- Mentions, emojis, links and code never go to the AI and come back unchanged.
 
 <table>
   <tr>
@@ -36,7 +36,7 @@ Fix the grammar of your Discord messages and get reply suggestions.
 - **Custom**: any OpenAI-compatible server, including local ones like Ollama.
 - **Subscription sign in**: Claude, ChatGPT, GitHub Copilot, Gemini and more.
 
-Keys and sign ins are stored encrypted outside Discord. Text is only sent when you click a button.
+Keys and sign ins are stored encrypted outside Discord. Text is only sent when you use Fix Grammar or Suggest Reply. Fix Grammar starts checking when your pointer reaches the button, so results show up sooner.
 
 <br clear="right">
 
